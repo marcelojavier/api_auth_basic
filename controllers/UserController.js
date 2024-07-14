@@ -23,6 +23,23 @@ router.get('/getAllUsers',
     res.status(response.code).json(response.message);
 })
 
+router.get('/findUsers', async (req, res) => {
+  try {
+    const { eliminados, nombre, antesSesion, despuesSesion } = req.query;
+
+    const users = await UserService.findUsers({
+        eliminados,
+        nombre,
+        antesSesion,
+        despuesSesion
+    });
+
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({message: "Ha ocurrido un error"})
+  }
+})
+
 router.get(
     '/:id',
     [
