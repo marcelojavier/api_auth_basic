@@ -11,14 +11,27 @@ router.post('/create', async (req, res) => {
     res.status(response.code).json(response.message);
 });
 
-router.get('/getAllUsers', 
-    [
-        NumberMiddleware.isNumber,
-        UserMiddleware.isValidUserById,
-        AuthMiddleware.validateToken,
-        UserMiddleware.hasPermissions
-    ]
-    , async (req, res) => {
+router.post('/bulkCreate', async (req, res) => {
+      const users = req.body;
+      let correctos = 0;
+      let fallidos = 0;
+
+      for (const user of users) {
+        const response = await UserService.bulkCreateUsers(user);
+        if (response) {
+          correctos++;
+        } else {
+          fallidos++;
+        }
+      }
+
+      res.json({
+        "correctos": correctos,
+        "fallidos": fallidos,
+      })
+})
+
+router.get('/getAllUsers', async (req, res) => {
     const response = await UserService.getAllUsers();
     res.status(response.code).json(response.message);
 })
