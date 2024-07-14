@@ -11,6 +11,18 @@ router.post('/create', async (req, res) => {
     res.status(response.code).json(response.message);
 });
 
+router.get('/getAllUsers', 
+    [
+        NumberMiddleware.isNumber,
+        UserMiddleware.isValidUserById,
+        AuthMiddleware.validateToken,
+        UserMiddleware.hasPermissions
+    ]
+    , async (req, res) => {
+    const response = await UserService.getAllUsers();
+    res.status(response.code).json(response.message);
+})
+
 router.get(
     '/:id',
     [
